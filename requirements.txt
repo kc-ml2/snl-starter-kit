@@ -1,0 +1,3 @@
+flask
+pytest
+git+https://github.com/kc-ml2/rl2.git
