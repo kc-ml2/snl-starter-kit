@@ -1,7 +1,7 @@
-DOCKERHUB_USERNAME="your username"
-PASSWORD="your pass"
-REPO="repo"
-TAG="tag"
+DOCKERHUB_USERNAME="$1"
+PASSWORD="$2"
+REPO="$3"
+TAG="$4"
 
 
 RED='\033[0;31m'
@@ -17,7 +17,7 @@ test_agent() {
 # dockerize agent into image and submit to dockerhub
 docker_submit() {
   echo "${RED}[INFO] submitting docker image...${NC}"
-  REPOTAG "$DOCKERHUB_USERNAME/$REPO:$TAG"
+  REPOTAG="$DOCKERHUB_USERNAME/$REPO:$TAG"
   docker login --username="$DOCKERHUB_USERNAME" --password="$PASSWORD"
 
   docker build -t "$REPOTAG" .
