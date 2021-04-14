@@ -1,13 +1,14 @@
 import json
 
 import numpy as np
-from flask import Flask, request, make_response, current_app
+from flask import Flask, request, make_response, current_app, jsonify
 
 
 class AgentServer(Flask):
     """
     minimal stateful server
     """
+
     def __init__(self, agent):
         super(AgentServer, self).__init__(__name__)
         self.agent = agent
@@ -23,20 +24,29 @@ agent_ = algo.agent_factory()
 app = AgentServer(agent_)
 
 
+class NumpyEncoder(json.JSONEncoder):
+    """ Special json encoder for numpy types """
+    """https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializables"""
+
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
+
+
 @app.route('/act', methods=['POST'])
 def act():
     agent = current_app.agent
-    obs = request.json['obs']
-
+    obs = json.loads(request.json)
+    obs = np.asarray(obs)
     action = agent.act(obs)
 
-    # possibility of other type? e.g. np.niter
-    if isinstance(action, np.ndarray):
-        action = action.tolist()
-
-    res = make_response({'ac': action})
-
-    return res, 200
+    dumped = json.dumps(action, cls=NumpyEncoder)
+    return dumped
 
 
 if __name__ == '__main__':
