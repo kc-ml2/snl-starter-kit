@@ -15,12 +15,11 @@ class AgentServer(Flask):
 
 
 from src import algo
-
-assert hasattr(algo, 'agent_factory'), ("'agent_factory' method "
-                                        "must be defined in algo.py")
-assert callable(algo.agent_factory), "agent_factory must be callable"
+assert hasattr(algo, 'agent_factory') and callable(algo.agent_factory), ("'agent_factory' method must be defined in algo.py and callable")
 
 agent_ = algo.agent_factory()
+assert hasattr(agent_, 'act') and callable(agent_.act), ("agent missing 'act' method")
+
 app = AgentServer(agent_)
 
 

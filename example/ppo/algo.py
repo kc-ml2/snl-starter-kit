@@ -39,7 +39,15 @@ n_env, env, observation_shape, action_shape, high = make_single()
 reorder = True
 
 
-def ppo():
+myconfig = {
+    'tag': 'TUTORIAL_PPO/',
+    'log_level': 10,
+    'log_interval': 20000
+}
+config = EasyDict(myconfig)
+
+
+def agent_factory():
     model = PPOModel(observation_shape,
                      action_shape,
                      recurrent=True,
@@ -59,19 +67,5 @@ def ppo():
                      num_epochs=epoch,
                      buffer_kwargs={'size': train_interval,
                                     'n_env': num_env})
-
-    return agent
-
-
-myconfig = {
-    'tag': 'TUTORIAL_PPO/',
-    'log_level': 10,
-    'log_interval': 20000
-}
-config = EasyDict(myconfig)
-
-
-def agent_factory():
-    agent = ppo()
 
     return agent

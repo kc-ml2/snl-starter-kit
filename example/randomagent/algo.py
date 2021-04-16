@@ -1,12 +1,17 @@
+from random import randint
+
+
 class Agent:
     """
     define your agent here
     """
+
     def __init__(self):
         pass
 
     def act(self, obs):
-        pass
+        ac = randint(0, 4)
+        return ac
 
 
 def agent_factory():

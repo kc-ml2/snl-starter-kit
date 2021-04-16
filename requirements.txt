@@ -1,4 +1,3 @@
 flask
-pytest
 git+https://github.com/kc-ml2/rl2.git@0673aa2
 git+https://github.com/kc-ml2/marlenv.git@0da40f6
