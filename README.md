@@ -52,3 +52,12 @@ docker login
 # below script will build and push docker image
 sh submit.sh {{dockerhub_username}} {{dockerhub_password}} {{repository(imagename)}} {{tag}}
 ```
+
+## Notes
+### 도커
+용량 부족
+* 도커 엔진은 사용할 수 있는 저장공간이 제한 되어있습니다. 이미 엔진에 너무 많은 이미지가 있거나, 생성하셨을 경우, 불필요한 이미지를 정리해주시고, `docker system prune`실행 해주세요.
+
+메모리 부족
+* 도커 엔진은 사용할 수 있는 메모리공간이 제한 되어있습니다. 이미지를 build 할 때, 간혹 메모리가 부족하다고 뜰 경우, 도커 엔진이 사용 할 수 있는 메모리를 늘려 주시기 바랍니다.
+

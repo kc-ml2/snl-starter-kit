@@ -1,5 +1,6 @@
 import json
 import os
+from time import sleep
 
 import docker
 import requests
@@ -51,9 +52,6 @@ def sample_request(url='http://localhost:5000/act'):
 
     return r
 
-r = sample_request()
-print(r.ok)
-
 def remote_rollout(image_name, checkpoint_dir):
     port = 5000
     container_name = 'test_agent'
@@ -87,7 +85,7 @@ def remote_rollout(image_name, checkpoint_dir):
             environment=['FLASK_APP=support/server', 'FLASK_ENV=development'],
             command=f'flask run --port {port} --host=0.0.0.0',
         )
-
+    sleep(10)
     r = sample_request()
     # img.remove(force=True)
 

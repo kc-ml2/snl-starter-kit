@@ -1,7 +1,7 @@
 import json
 
 import numpy as np
-from flask import Flask, request, logging
+from flask import Flask, request, logging, jsonify
 
 from support.utils import find_agent_module, NumpyEncoder, NumpyDecoder
 
@@ -14,7 +14,7 @@ class AgentServer(Flask):
     def __init__(self, agent, import_name=__name__, **kwargs):
         super().__init__(import_name, **kwargs)
         self.json_encoder = NumpyEncoder
-        self.json_decoder = NumpyDecoder
+        # self.json_decoder = NumpyDecoder
         self.agent = agent
         self.add_url_rule(
             rule='/act',
@@ -32,7 +32,7 @@ class AgentServer(Flask):
         action = self.agent.act(obs)
         self.logger.debug('action: ' + str(action))
 
-        return action
+        return jsonify(action)
 
 
 def create_app():
