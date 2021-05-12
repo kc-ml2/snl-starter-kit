@@ -15,24 +15,6 @@ VISION_RANGE = 5
 FRAME_STACK = 2
 
 
-# def build_image():
-#     client = docker.from_env()
-#     tag = 'test_repo/test_agent'
-#     # dockerfile_dir = './Dockerfile'
-#     # print(os.getcwd())
-#     # dockerfile_dir = os.path.abspath(dockerfile_dir)
-#     # print(dockerfile_dir)
-#     # with open(dockerfile_dir, 'rb') as fp:
-#     image = client.images.build(
-#         path='..', tag=tag, rm=True
-#     )
-# client = docker.from_env()
-# tag = 'test_repo/test_agent'
-#
-# image = client.images.build(
-#     path='..', tag=tag, rm=True
-# )
-
 def dummy_env():
     _, _, _, props = make_snake(
         n_env=1, num_snakes=1, vision_range=5, frame_stack=2
@@ -56,15 +38,7 @@ def remote_rollout(image_name, checkpoint_dir):
     port = 5000
     container_name = 'test_agent'
 
-    # checkpoint_dir = '../src/ckpt'
-    # checkpoint_dir = os.path.abspath(checkpoint_dir)
-    print('*'*100, checkpoint_dir)
-
     client = docker.from_env()
-    # try:
-    #     img = client.images.get(image_name)
-    # except docker.errors.NotFound:
-    #     build_image()
 
     try:
         cont = client.containers.get(container_name)
@@ -87,7 +61,6 @@ def remote_rollout(image_name, checkpoint_dir):
         )
     sleep(10)
     r = sample_request()
-    # img.remove(force=True)
 
     return r
 
