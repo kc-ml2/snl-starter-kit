@@ -1,6 +1,4 @@
-FROM kcml2/snl-pytorch:1.4
-
-RUN apt update && apt install libopenmpi-dev git -y
+FROM kcml2/snl-torch:1.4
 
 COPY . /agent
 WORKDIR /agent

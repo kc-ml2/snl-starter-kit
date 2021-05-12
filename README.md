@@ -35,10 +35,11 @@ class Agent:
         pass
 ```
 
-* agent_factory라는 method에 inference(혹은 test) time을 위한 initializing하여 agent instance를 return 해주셔야 합니다.
+* Inference(혹은 test) time을 위한 파라미터로 초기화된 agent instance를, `agent_factory` 메소드에서 return 해주셔야 합니다.
+* 예를 들어, Epsilon greedy exploration을 하는 agent의 경우, test time에서는 exploration을 원치 않을때, explore=False
 ```python
 def agent_factory():
-    agent = Agent()
+    agent = Agent(**kwargs_for_inference)
 
     return agent
 ```

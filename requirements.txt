@@ -1,6 +1,5 @@
-flask
 # git+https://github.com/kc-ml2/rl2.git@centralized
 # git+https://github.com/kc-ml2/marlenv.git@0da40f6
-docker
 pytest
+jupyter
 easydict

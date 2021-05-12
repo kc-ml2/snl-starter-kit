@@ -14,18 +14,23 @@ VISION_RANGE = 5
 FRAME_STACK = 2
 
 
-def build_image():
-    client = docker.from_env()
-    tag = 'test_repo/test_agent'
-    # dockerfile_dir = './Dockerfile'
-    # print(os.getcwd())
-    # dockerfile_dir = os.path.abspath(dockerfile_dir)
-    # print(dockerfile_dir)
-    # with open(dockerfile_dir, 'rb') as fp:
-    image = client.images.build(
-        path='..', tag=tag, rm=True
-    )
-
+# def build_image():
+#     client = docker.from_env()
+#     tag = 'test_repo/test_agent'
+#     # dockerfile_dir = './Dockerfile'
+#     # print(os.getcwd())
+#     # dockerfile_dir = os.path.abspath(dockerfile_dir)
+#     # print(dockerfile_dir)
+#     # with open(dockerfile_dir, 'rb') as fp:
+#     image = client.images.build(
+#         path='..', tag=tag, rm=True
+#     )
+# client = docker.from_env()
+# tag = 'test_repo/test_agent'
+#
+# image = client.images.build(
+#     path='..', tag=tag, rm=True
+# )
 
 def dummy_env():
     _, _, _, props = make_snake(
@@ -35,32 +40,33 @@ def dummy_env():
     return props
 
 
-def sample_request():
+def sample_request(url='http://localhost:5000/act'):
     props = dummy_env()
     obs = props['high']
 
     print('sending request')
     r = requests.post(
-        'http://localhost:5000/act',
-        json=json.dumps(obs, cls=NumpyEncoder)
+        url, json=json.dumps(obs, cls=NumpyEncoder)
     )
 
     return r
 
+r = sample_request()
+print(r.ok)
 
-def remote_rollout():
+def remote_rollout(image_name, checkpoint_dir):
     port = 5000
-    image_name = 'test_repo/test_agent'
     container_name = 'test_agent'
 
-    checkpoint_dir = '../src/ckpt'
-    checkpoint_dir = os.path.abspath(checkpoint_dir)
+    # checkpoint_dir = '../src/ckpt'
+    # checkpoint_dir = os.path.abspath(checkpoint_dir)
+    print('*'*100, checkpoint_dir)
 
     client = docker.from_env()
-    try:
-        img = client.images.get(image_name)
-    except docker.errors.NotFound:
-        build_image()
+    # try:
+    #     img = client.images.get(image_name)
+    # except docker.errors.NotFound:
+    #     build_image()
 
     try:
         cont = client.containers.get(container_name)
@@ -83,7 +89,7 @@ def remote_rollout():
         )
 
     r = sample_request()
-    img.remove(force=True)
+    # img.remove(force=True)
 
     return r
 

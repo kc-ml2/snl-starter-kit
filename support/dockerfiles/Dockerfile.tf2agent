@@ -1,0 +1,4 @@
+FROM kcml2/snl-base:latest
+
+RUN pip3 install \
+    tensorflow==2.4 \
