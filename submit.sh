@@ -1,6 +1,7 @@
 echo "enter snl email account: "
 read ACCOUNT
 
+
 echo "enter snl upload key: "
 read UPLOAD_KEY
 
