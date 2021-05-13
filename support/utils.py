@@ -4,7 +4,7 @@ from importlib import import_module
 import numpy as np
 
 
-def find_agent_module(
+def find_algo_module(
         folder: str = 'src.algo',
         factory_name: str = 'agent_factory'
 ):

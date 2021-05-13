@@ -3,7 +3,7 @@ import json
 import numpy as np
 from flask import Flask, request, logging, jsonify
 
-from support.utils import find_agent_module, NumpyEncoder, NumpyDecoder
+from support.utils import find_algo_module, NumpyEncoder, NumpyDecoder
 
 
 class AgentServer(Flask):
@@ -27,16 +27,19 @@ class AgentServer(Flask):
 
     def act_view(self):
         obs = json.loads(request.get_json())
+
         self.logger.debug('got request: ' + str(obs))
+
         obs = np.asarray(obs)
         action = self.agent.act(obs)
+
         self.logger.debug('action: ' + str(action))
 
         return jsonify(action)
 
 
 def create_app():
-    algo = find_agent_module()
+    algo = find_algo_module('example.multippo.algo')
     agent = algo.agent_factory()
 
     app = AgentServer(agent)
