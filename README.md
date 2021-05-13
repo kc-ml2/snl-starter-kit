@@ -24,8 +24,8 @@ snl-starter-kit/
 
 src 폴더안의 algo에 본인의 에이전트를 구현하시면 됩니다.
 
-* `Agent` class에 `act` method는 꼭 정의 되어있어야 합니다.
-*  `Agent.act` 메소드의 인자로 환경의 observation이 들어옵니다. observation의 디테일은 comment 혹은 https://github.com/kc-ml2/marlenv를 참조 부탁드립니다.  
+* `Agent` 클래스에 `act` 메소드는 꼭 정의 되어있어야 합니다.
+*  `Agent.act` 메소드의 인자로 게임환경의 observation이 들어옵니다. observation의 디테일은 comment 혹은 https://github.com/kc-ml2/marlenv를 참조 부탁드립니다.  
 ```python
 class Agent:
     def __init__(self):
