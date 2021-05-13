@@ -1,7 +1,9 @@
 import json
 from importlib import import_module
+from time import sleep
 
 import numpy as np
+import requests
 
 
 def find_algo_module(
@@ -46,3 +48,28 @@ class NumpyDecoder(json.JSONDecoder):
             return range(value[0], value[-1])
 
         return obj
+
+
+def server_alive(url, interval=1):
+    cnt = 1
+    limit = 60
+    endpoint = '/ping'
+    url = url + endpoint
+    while True:
+        if cnt % 10 == 0:
+            print(f'pinging {cnt} times...')
+        if cnt == limit:
+            return False
+
+        r = None
+        try:
+            r = requests.get(url)
+        except:
+            pass
+
+        if r is not None and r.ok:
+            break
+        sleep(interval)
+        cnt += 1
+
+    return True

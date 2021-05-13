@@ -10,7 +10,7 @@ import requests
 from marlenv.envs.snake_env import SnakeEnv
 from marlenv.wrappers import make_snake
 
-from support.utils import NumpyEncoder, find_algo_module
+from support.utils import NumpyEncoder, find_algo_module, server_alive
 
 VISION_RANGE = 5
 FRAME_STACK = 2
@@ -26,8 +26,21 @@ def dummy_env():
     return props
 
 
+def safe_rmi(client, image_id):
+    image = client.images.get(image_id)
+    for c in image.attrs['Container']:
+        try:
+            c_ = client.containers.get(c)
+            c_.kill(force=True)
+        except:
+            pass
+    client.images.remove(image_id, force=True)
+
+
 @pytest.fixture
 def agent_image():
+    rmi = True
+
     client = docker.from_env()
 
     repotag = 'test-repo/test-image'
@@ -35,37 +48,17 @@ def agent_image():
     dockerfile_dir = os.path.join(base_dir, 'Dockerfile')
     assert os.path.exists(dockerfile_dir)
     image, logs = client.images.build(path='.', tag=repotag, rm=True)
+    image_id = image.id
 
-    yield image
+    yield image_id
 
-    for c in image.attrs['Container']:
-        c_ = client.containers.get(c)
-        c_.kill(force=True)
-    client.images.remove(image.id, force=True)
-
-
-def server_alive(url, interval=1):
-    cnt = 1
-    limit = 60
-    endpoint = '/ping'
-    url = url + endpoint
-    while True:
-        if cnt % 10 == 0:
-            print(f'pinging {cnt} times...')
-        if cnt == limit:
-            return False
-        r = requests.get(url)
-
-        if r.ok:
-            break
-        sleep(interval)
-        cnt += 1
-
-    return True
+    if rmi:
+        safe_rmi(client, image_id)
 
 
 @pytest.fixture
 def agent_container(agent_image):
+    rm = True
     container_name = 'test-container'
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -75,27 +68,32 @@ def agent_container(agent_image):
     client = docker.from_env()
     try:
         container = client.containers.get(container_name)
+        container.remove(force=True)
     except docker.errors.NotFound as e:
-        container = client.containers.run(
-            agent_image.id,
+        pass
+    finally:
+        container_id = client.containers.run(
+            agent_image,
             detach=True,
             name=container_name,
             ports={f'5000/tcp': port},
             # auto_remove=True,
-        )
-    if server_alive(f'http://localhost:{port}') is False:
-        s.close()
-        container.remove(force=True)
-        raise RuntimeError('running agent server failed')
-    print(id(container), '*'*100)
-    yield container
+        ).id
+        if not server_alive(f'http://localhost:{port}'):
+            raise RuntimeError('running server failed')
+    # container instance MUST be retrieved again by id
+    # else, container instance is not updated and you won't be able to see port
+
+    yield container_id
 
     s.close()
-    container.remove(force=True)
+    if rm:
+        container = client.containers.get(container_id)
+        container.remove(force=True)
 
 
 def test_local():
-    algo = find_algo_module('example.multippo.algo')
+    algo = find_algo_module()
     agent = algo.agent_factory()
     props = dummy_env()
     sample_obs = props['high']
@@ -103,20 +101,26 @@ def test_local():
     assert ac in ACTIONS
 
 
-def sample_request(url=f'http://localhost:30000/act'):
+def sample_request(url, endpoint='/act'):
     props = dummy_env()
     obs = props['high']
 
     print('sending request')
-    r = requests.post(url, json=json.dumps(obs, cls=NumpyEncoder))
+    r = requests.post(
+        url + endpoint,
+        json=json.dumps(obs, cls=NumpyEncoder)
+    )
 
     return r
 
 
 def test_remote(agent_container):
-    print(id(agent_container), '*' * 100)
-    port = agent_container.ports['5000/tcp'][0]['HostPort']
-    url = f'http://localhost:{port}/act'
+    client = docker.from_env()
+    container = client.containers.get(agent_container)
+    port = container.ports['5000/tcp'][0]['HostPort']
 
-    r = sample_request(url)
+    url = f'http://localhost:{port}'
+    endpoint = '/act'
+
+    r = sample_request(url, endpoint)
     assert r.ok
