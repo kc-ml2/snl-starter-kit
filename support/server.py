@@ -22,8 +22,17 @@ class AgentServer(Flask):
             view_func=self.act_view,
             methods=['POST'],
         )
+        self.add_url_rule(
+            rule='/ping',
+            endpoint='ping',
+            view_func=self.ping_view,
+            methods=['GET'],
+        )
 
         self.logger = logging.create_logger(self)
+
+    def ping_view(self):
+        return '{}'
 
     def act_view(self):
         obs = json.loads(request.get_json())
