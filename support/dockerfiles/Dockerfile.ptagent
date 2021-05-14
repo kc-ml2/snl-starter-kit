@@ -1,0 +1,6 @@
+ARG version
+FROM kcml2/snl-base:latest
+
+RUN pip3 install \
+    'torch<1.8.0' \
+    'git+https@github.com:kc-ml2/rl2.git@centralized' \ 

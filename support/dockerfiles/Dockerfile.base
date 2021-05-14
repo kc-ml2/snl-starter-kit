@@ -1,0 +1,9 @@
+FROM python:3.7.10-slim-buster
+
+RUN apt-get update -y && apt-get upgrade -y
+RUN apt install git-all -y 
+RUN pip3 install \
+    git+https://github.com/kc-ml2/marlenv.git \
+    docker \
+    flask \
+    requests \

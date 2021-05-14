@@ -1,11 +1,11 @@
-#FROM https://hub.docker.com/orgs/kcml2/snl-base:v0
-FROM python:3.7
-
-RUN apt update && apt install libopenmpi-dev -y
+FROM kcml2/snl-torch:1.4
 
 COPY . /agent
+WORKDIR /agent
 RUN pip3 install --upgrade pip
-RUN pip3 install -r /agent/requirements.txt
+RUN pip3 install -r requirements.txt
 
-ENV FLASK_APP=/agent/server
-CMD python /agent/server.py
+EXPOSE 5000
+
+ENV FLASK_APP=support/server
+CMD flask run --host 0.0.0.0
