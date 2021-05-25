@@ -18,12 +18,13 @@ ACTIONS = list(SnakeEnv.default_action_dict.values())
 
 
 def dummy_env():
-    _, _, _, props = make_snake(
+    env, _, _, props = make_snake(
         n_env=1, num_snakes=1, vision_range=VISION_RANGE,
         frame_stack=FRAME_STACK
     )
+    obs = env.reset()
 
-    return props
+    return env, obs
 
 
 def safe_rmi(client, image_id):
@@ -39,7 +40,8 @@ def safe_rmi(client, image_id):
 
 @pytest.fixture
 def agent_image():
-    rmi = True
+    print('\nbuilding test image...')
+    rmi = False
 
     client = docker.from_env()
 
@@ -58,6 +60,7 @@ def agent_image():
 
 @pytest.fixture
 def agent_container(agent_image):
+    print('\nrunning test container...')
     rm = True
     container_name = 'test-container'
 
@@ -93,19 +96,18 @@ def agent_container(agent_image):
 
 
 def test_local():
-    algo = find_algo_module()
+    print('\ntesting local rollout...')
+    algo = find_algo_module('example.ppo.algo')
     agent = algo.agent_factory()
-    props = dummy_env()
-    sample_obs = props['high']
-    ac = agent.act(sample_obs)
-    assert ac in ACTIONS
+    env, obs = dummy_env()
+    ac = agent.act(obs)
+    env.step(ac)
 
 
 def sample_request(url, endpoint='/act'):
-    props = dummy_env()
-    obs = props['high']
+    env, obs = dummy_env()
 
-    print('sending request')
+    print('\nsending request')
     r = requests.post(
         url + endpoint,
         json=json.dumps(obs, cls=NumpyEncoder)
@@ -115,6 +117,7 @@ def sample_request(url, endpoint='/act'):
 
 
 def test_remote(agent_container):
+    print('\ntesting remote rollout...')
     client = docker.from_env()
     container = client.containers.get(agent_container)
     port = container.ports['5000/tcp'][0]['HostPort']

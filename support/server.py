@@ -48,7 +48,7 @@ class AgentServer(Flask):
 
 
 def create_app():
-    algo = find_algo_module()
+    algo = find_algo_module('example.ppo.algo')
     agent = algo.agent_factory()
 
     app = AgentServer(agent)

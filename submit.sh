@@ -46,7 +46,7 @@ http_code=$(tail -n1 <<< "$response")  # get the last line
 # if test.py returns non-zero value, then the rest script won't be executed
 test_agent() {
   echo "${RED}[INFO] validating your agent... might take a while...${NC}"
-  python3 -m pytest support/tests.py
+  pytest support/tests.py -s
 }
 
 # dockerize agent into image and submit to dockerhub

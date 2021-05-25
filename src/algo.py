@@ -1,5 +1,3 @@
-import marlenv
-
 """brief explanation of env
 for details of Snake-v1, refer to
 https://github.com/kc-ml2/marlenv
@@ -21,14 +19,15 @@ wall, fruit, my head, my body, my tail, others head, others body, others tail
 
 
 class Agent:
+
     def act(self, obs):
         raise NotImplementedError
 
 
 def agent_factory():
+    # load your saved model
+
     # initialize agent with arguments for test(inference) time
     agent = Agent()
-
-    # load your saved model
 
     return agent

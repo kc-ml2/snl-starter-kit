@@ -1,5 +1,6 @@
-# git+https://github.com/kc-ml2/rl2.git@centralized
-# git+https://github.com/kc-ml2/marlenv.git@0da40f6
+git+https://github.com/kc-ml2/rl2.git
+git+https://github.com/kc-ml2/marlenv.git
 pytest
 jupyter
 easydict
+tensorboard
