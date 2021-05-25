@@ -65,7 +65,7 @@ sh submit.sh
 
 ## Window 사용자
 
-Tested on Python 3.7 
+Tested on Python 3.7, Docker Engine backed by WSL
 
 PowerShell or git-bash로 submit.sh 실행(관리자 권한 필요없습니다.)
 `.₩submit.sh` 혹은 `sub`타입후 탭
