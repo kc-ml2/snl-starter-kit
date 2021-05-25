@@ -3,17 +3,18 @@ SNL에 참여 하기위한 stater kit 입니다.
 
 ## Prerequisite
 
-* Docker Hub account
-   * https://hub.docker.com/
-* Docker Engine
+* SNL account
+   * http://52.231.199.165/
+* Docker Engine(엔진이 꼭!! 켜져 있어야합니다)
     * tested on CentOS, Ubuntu, MacOS
     
-## How-To
-
-패키지 설치
+* 패키지 설치
 ```
 pip install -r requirements.txt
 ```
+
+
+## How-To
 
 Directories
 ```
@@ -62,3 +63,13 @@ sh submit.sh
 메모리 부족
 * 도커 엔진은 사용할 수 있는 메모리공간이 제한 되어있습니다. 이미지를 build 할 때, 간혹 메모리가 부족하다고 뜰 경우, 도커 엔진이 사용 할 수 있는 메모리를 늘려 주시기 바랍니다.
 
+## Window 사용자
+
+Tested on Python 3.7 
+
+PowerShell or git-bash로 submit.sh 실행(관리자 권한 필요없습니다.)
+`.₩submit.sh` 혹은 `sub`타입후 탭
+
+* Pycharm등의 IDE terminal에서는 그냥 `submit.sh`
+
+* submit.sh 실행중 권한 요청이 오면 수락
