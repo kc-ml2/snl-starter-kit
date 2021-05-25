@@ -1,71 +1,74 @@
-import gym
-import marlenv
+import json
+import os
+from pathlib import Path
+
 from easydict import EasyDict
-from marlenv.wrappers import SingleAgent
+from marlenv.wrappers import make_snake
 from rl2.agents.ppo import PPOModel, PPOAgent
+from rl2.examples.temp_logger import Logger
 
 
-custom_reward = {
-    'fruit': 1.0,
-    'kill': 0.0,
-    'lose': 0.0,
-    'win': 0.0,
-    'time': 0.1
-}
-
-
-def make_snake():
-    def _make():
-        env = gym.make("Snake-v1",
-                       num_snakes=1, width=20, height=20,
-                       vision_range=5, frame_stack=2,
-                       reward_dict=custom_reward)
-        env = SingleAgent(env)
-        return env
-
-    return _make
-
-
-def make_single():
-    n_env = 1
-    env = make_snake()()
-    observation_shape = env.observation_space.shape
-    action_shape = (env.action_space.n,)
-    high = env.observation_space.high
-    return n_env, env, observation_shape, action_shape, high
-
-
-n_env, env, observation_shape, action_shape, high = make_single()
-reorder = True
-
-
-myconfig = {
-    'tag': 'TUTORIAL_PPO/',
-    'log_level': 10,
-    'log_interval': 20000
-}
-config = EasyDict(myconfig)
+def ppo(obs_shape, ac_shape, config, props, load_dir=None):
+    model = PPOModel(
+        obs_shape,
+        ac_shape,
+        recurrent=config.recurrent,
+        discrete=True,
+        reorder=props.reorder,
+        optimizer=config.optimizer,
+        high=props.high
+    )
+    if load_dir is not None:
+        model.load(load_dir)
+    agent = PPOAgent(
+        model,
+        train_interval=config.train_interval,
+        n_env=props.n_env,
+        batch_size=config.batch_size,
+        num_epochs=config.epoch,
+        buffer_kwargs={
+            'size': config.train_interval,
+            'n_env': props.n_env}
+    )
+    return agent
 
 
 def agent_factory():
-    model = PPOModel(observation_shape,
-                     action_shape,
-                     recurrent=True,
-                     discrete=True,
-                     reorder=reorder,
-                     optimizer='torch.optim.RMSprop',
-                     high=high)
-    train_interval = 128
-    num_env = n_env
-    epoch = 4
-    batch_size = 512
-    model.load('./ckpt/5000k/PPOModel.pt')
-    agent = PPOAgent(model,
-                     train_interval=train_interval,
-                     n_env=n_env,
-                     batch_size=batch_size,
-                     num_epochs=epoch,
-                     buffer_kwargs={'size': train_interval,
-                                    'n_env': num_env})
+    config = {
+        'n_env': 64,
+        'num_snakes': 1,
+        'width': 20,
+        'height': 20,
+        'vision_range': 5,
+        'frame_stack': 2,
+        'train_interval': 128,
+        'epoch': 4,
+        'batch_size': 512,
+        'max_step': int(5e6),
+        'optimizer': 'torch.optim.RMSprop',
+        'recurrent': True,
+        'log_interval': 20000,
+        'log_level': 10,
+        'save_interval': 1000000,
+        'tag': 'PPO',
+    }
+    config = EasyDict(config)
+    base_dir = Path(__file__).absolute().parent
+    model_file = os.path.join(base_dir, "ckpt", "5000k", "PPOModel.pt")
 
+    env, observation_shape, action_shape, props = make_snake(
+        n_env=1,
+        num_snakes=config.num_snakes,
+        width=config.width,
+        height=config.height,
+        vision_range=config.vision_range,
+        frame_stack=config.frame_stack
+    )
+    agent = ppo(
+        observation_shape,
+        action_shape,
+        config,
+        props,
+        load_dir=model_file
+    )
     return agent

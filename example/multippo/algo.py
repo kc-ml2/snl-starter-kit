@@ -38,7 +38,7 @@ def agent_factory():
         high=props['high']
     )
     project_dir = Path(__file__).absolute().parent
-    model_dir = os.path.join(project_dir, 'ckpt/agent0/1k/PPOModel.pt')
+    model_dir = os.path.join(project_dir, 'ckpt/agent0/10000k/PPOModel.pt')
     model.load(model_dir)
     print(model)
 
