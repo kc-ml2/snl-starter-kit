@@ -11,6 +11,7 @@ SNL에 참여 하기위한 stater kit 입니다.
     * Ubuntu : sudo apt-get install libopenmpi-dev
     * CentOS/RHEL : sudo yum install openmpi-devel
     * Mac : brew install mpich
+    * 경우에 따라 환경변수 설정등이 필요 할 수도 있기 때문에, 환경에 맞는 설치방법을 구글링하여 설치.
 * 패키지 설치
 ```
 pip install -r requirements.txt
