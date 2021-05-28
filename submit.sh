@@ -55,7 +55,6 @@ docker_submit() {
   REPOTAG="registry.kc-ml2.com/$AGENT_NAME:$AGENT_TAG"
   docker build -t "$REPOTAG" .
   docker push "$REPOTAG"
-  echo "wait!! TODO print loading progress bar "
   curl -s -X POST -d "${PAYLOAD}" --header "Content-Type:application/json" $COMPLETE_URL
   echo "Thanks"
 }
