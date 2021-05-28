@@ -60,7 +60,6 @@ docker login
 
 # 만약 ./submit.sh가 실행 안될경우
 
-sudo chmod +x submit.sh
 sudo chmod 777 submit.sh
 ```
 
