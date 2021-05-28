@@ -10,7 +10,7 @@ SNL에 참여 하기위한 stater kit 입니다.
 * openmpi(만약 시스템에 설치되어 있지 않다면) for mpi4py
     * Ubuntu : sudo apt-get install libopenmpi-dev
     * CentOS/RHEL : sudo yum install openmpi-devel
-    * Mac : brew install mpich
+    * Mac : (필요시)(대부분의 경우에 이미 설치되어 있음)brew install mpich
     * 경우에 따라 환경변수 설정등이 필요 할 수도 있기 때문에, 환경에 맞는 설치방법을 구글링하여 설치.
 * 패키지 설치
 ```
@@ -58,7 +58,7 @@ docker login
 # below script will build and push docker image
 ./submit.sh
 
-# 만약 ./submit.sh가 안될경우
+# 만약 ./submit.sh가 실행 안될경우
 
 sudo chmod +x submit.sh
 sudo chmod 777 submit.sh
