@@ -7,7 +7,10 @@ SNL에 참여 하기위한 stater kit 입니다.
    * http://52.231.199.165/
 * Docker Engine(엔진이 꼭!! 켜져 있어야합니다)
     * tested on CentOS, Ubuntu, MacOS
-    
+* openmpi(만약 시스템에 설치되어 있지 않다면) for mpi4py
+    * Ubuntu : sudo apt-get install libopenmpi-dev
+    * CentOS/RHEL : sudo yum install openmpi-devel
+    * Mac : brew install mpich
 * 패키지 설치
 ```
 pip install -r requirements.txt
@@ -52,7 +55,12 @@ docker login
 
 
 # below script will build and push docker image
-sh submit.sh
+./submit.sh
+
+# 만약 ./submit.sh가 안될경우
+
+sudo chmod +x submit.sh
+sudo chmod 777 submit.sh
 ```
 
 ## Notes
