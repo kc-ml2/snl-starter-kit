@@ -97,7 +97,7 @@ def agent_container(agent_image):
 
 def test_local():
     print('\ntesting local rollout...')
-    algo = find_algo_module('example.ppo.algo')
+    algo = find_algo_module()
     agent = algo.agent_factory()
     env, obs = dummy_env()
     ac = agent.act(obs)
