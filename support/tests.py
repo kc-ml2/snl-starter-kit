@@ -64,9 +64,10 @@ def agent_container(agent_image):
     rm = True
     container_name = 'test-container'
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(('', 0))
-    port = s.getsockname()[1]
+    # s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # s.bind(('', 0))
+    # port = s.getsockname()[1]
+    port = 30000
 
     client = docker.from_env()
     try:
@@ -97,7 +98,7 @@ def agent_container(agent_image):
 
 def test_local():
     print('\ntesting local rollout...')
-    algo = find_algo_module()
+    algo = find_algo_module('example.ppo.algo')
     agent = algo.agent_factory()
     env, obs = dummy_env()
     ac = agent.act(obs)
