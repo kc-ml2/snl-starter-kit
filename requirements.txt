@@ -4,3 +4,4 @@ pytest
 jupyter
 easydict
 tensorboard
+docker

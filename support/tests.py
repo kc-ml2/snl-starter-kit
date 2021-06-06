@@ -90,7 +90,7 @@ def agent_container(agent_image):
 
     yield container_id
 
-    s.close()
+    # s.close()
     if rm:
         container = client.containers.get(container_id)
         container.remove(force=True)
